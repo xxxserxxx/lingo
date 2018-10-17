@@ -1,4 +1,4 @@
-lingo
+lingo-toml
 =====
 
 Very basic Golang library for i18n. There are others that do the job, but this is my take on the problem.
