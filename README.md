@@ -1,4 +1,4 @@
-**This is a version of https://github.com/kortemy/lingo that uses TOML at the JSON Placement**
+**This is a version of https://github.com/kortemy/lingo that uses TOML instead of JSON for messages storage**
 
 lingo-toml
 =====
