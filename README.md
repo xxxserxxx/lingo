@@ -26,18 +26,18 @@ Usage:
         ...
       ```
       You can write nested TOML too.
-      ```
-      title = "CutleryPlus"
-subtitle = "Knives that put cut in cutlery."
+      ```json
+        title = "CutleryPlus"
+        subtitle = "Knives that put cut in cutlery."
 
-[menu]
-home = "Home"
+          [menu]
+          home = "Home"
 
-  [menu.products]
-  self = "Products"
-  forks = "Forks"
-  knives = "Knives"
-  spoons = "Spoons"
+            [menu.products]
+            self = "Products"
+            forks = "Forks"
+            knives = "Knives"
+            spoons = "Spoons"
       ```
   2. Initialize a Lingo like this:
 
