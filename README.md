@@ -1,6 +1,7 @@
+**This is a version of https://github.com/kortemy/lingo that uses TOML at the JSON Placement**
+
 lingo-toml
 =====
-This is a version of https://github.com/kortemy/lingo that uses TOML at the JSON Placement
 
 Very basic Golang library for i18n. There are others that do the job, but this is my take on the problem.
 
