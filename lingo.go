@@ -1,7 +1,7 @@
 package lingo
 
 import (
-	"encoding/json"
+	"github.com/BurntSushi/toml"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -99,7 +99,7 @@ func (t T) exists(key string) bool {
 // Default locale, to be used when requested locale
 // is not found.
 // Path, absolute or relative path to a folder where
-// translation .json files are kept
+// translation .toml files are kept
 func New(deflt, path string) *L {
 	files, _ := ioutil.ReadDir(path)
 	l := &L{
@@ -118,9 +118,9 @@ func New(deflt, path string) *L {
 		t := T{
 			transl: make(map[string]interface{}),
 		}
-		err = json.Unmarshal(dat, &t.transl)
+		err = toml.Unmarshal(dat, &t.transl)
 		if err != nil {
-			log.Printf("Cannot read file %s, invalid JSON.", fileName)
+			log.Printf("Cannot read file %s, invalid TOML.", fileName)
 			log.Printf("Error: %s", err)
 			continue
 		}
