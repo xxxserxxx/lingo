@@ -5,7 +5,7 @@ Very basic Golang library for i18n. There are others that do the job, but this i
 
 Features:
 ---------
-1. Storing messages in JSON files.
+1. Storing messages in TOML files.
 2. Support for nested declarations.
 2. Detecting language based on Request headers.
 3. Very simple to use.
@@ -17,29 +17,27 @@ Usage:
       ```go
         import "github.com/kortem/lingo"
       ```
-  1. Create a dir to store translations, and write them in JSON files named [locale].json. For example:
+  1. Create a dir to store translations, and write them in TOML files named [locale].toml. For example:
 
       ```    
-        en_US.json
-        sr_RS.json
-        de.json
+        en_US.toml
+        sr_RS.toml
+        de.toml
         ...
       ```
-      You can write nested JSON too.
-      ```json
-        {
-          "main.title" : "CutleryPlus",
-          "main.subtitle" : "Knives that put cut in cutlery.",
-          "menu" : {
-            "home" : "Home",
-            "products": {
-              "self": "Products",
-              "forks" : "Forks",
-              "knives" : "Knives",
-              "spoons" : "Spoons"
-            },
-          }
-        }
+      You can write nested TOML too.
+      ```toml
+      title = "CutleryPlus"
+subtitle = "Knives that put cut in cutlery."
+
+[menu]
+home = "Home"
+
+  [menu.products]
+  self = "Products"
+  forks = "Forks"
+  knives = "Knives"
+  spoons = "Spoons"
       ```
   2. Initialize a Lingo like this:
 
