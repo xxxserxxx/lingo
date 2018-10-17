@@ -26,7 +26,7 @@ Usage:
         ...
       ```
       You can write nested TOML too.
-      ```toml
+      ```
       title = "CutleryPlus"
 subtitle = "Knives that put cut in cutlery."
 
