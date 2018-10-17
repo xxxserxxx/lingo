@@ -15,7 +15,7 @@ Usage:
   1. Import Lingo into your project
 
       ```go
-        import "github.com/kortem/lingo"
+        import "github.com/jdkeke142/lingo-toml"
       ```
   1. Create a dir to store translations, and write them in TOML files named [locale].toml. For example:
 
