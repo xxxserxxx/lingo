@@ -1,0 +1,31 @@
+[main]
+title="CutleryPlus"
+subtitle="Messer, die legte in Besteck geschnitten."
+
+[menu]
+home="Home"
+gallery="Galerie"
+about= "Über uns"
+contact="Kontakt"
+
+[menu.products]
+self="Produkte"
+forks="Gabeln"
+knives="Messer"
+spoons="Löffel"
+
+[home]
+title="Willkommen in CutleryPlus!"
+
+[home.text]
+p1="Lorem ipsum..."
+p2="Ein weiterer ipsum lorem."
+
+[error]
+404="Seite {0} wurde nicht gefunden."
+500="Stimmt etwas nicht auf unserer Seite ist, versuchen Sie es erneut."
+
+[error.contact]
+name="Sie müssen Ihren Namen eingeben."
+email="Sie müssen Ihre E-Mail ein."
+text="Sie können eine leere Nachricht nicht zu senden."

@@ -7,49 +7,64 @@ import (
 	"testing"
 )
 
+func TestFallback(t *testing.T) {
+	l, err := New("en_US", "translations", nil)
+	if err != nil {
+		t.Error(err)
+	}
+	t1 := l.TranslationsForLocale("de_DE")
+	actual := t1.Value("only.english")
+	expected := "This is only in the English file"
+	if actual != expected {
+		t.Errorf("Expected %v, got %v", expected, actual)
+		t.Fail()
+	}
+}
+
 func TestLingo(t *testing.T) {
-	l := New("de_DE", "translations")
+	tests := []struct {
+		key      string
+		expected string
+	}{
+		{"main.subtitle", "Knives that put cut in cutlery."},
+		{"home.title", "Welcome to CutleryPlus!"},
+		{"menu.products.self", "Products"},
+		{"menu.non.existant", "menu.non.existant"},
+	}
+
+	l, err := New("de_DE", "translations", nil)
+	if err != nil {
+		t.Error(err)
+	}
 	t1 := l.TranslationsForLocale("en_US")
-	r1 := t1.Value("main.subtitle")
-	r1Exp := "Knives that put cut in cutlery."
-	if r1 != r1Exp {
-		t.Errorf("Expected \""+r1Exp+"\", got %s", r1)
-		t.Fail()
+
+	for _, tc := range tests {
+		actual := t1.Value(tc.key)
+		if actual != tc.expected {
+			t.Errorf("Expected %v, got %v", tc.expected, actual)
+			t.Fail()
+		}
 	}
-	r2 := t1.Value("home.title")
-	r2Exp := "Welcome to CutleryPlus!"
-	if r2 != r2Exp {
-		t.Errorf("Expected \""+r2Exp+"\", got %s", r2)
-		t.Fail()
-	}
-	r3 := t1.Value("menu.products.self")
-	r3Exp := "Products"
-	if r3 != r3Exp {
-		t.Errorf("Expected \""+r3Exp+"\", got %s", r3)
-		t.Fail()
-	}
-	r4 := t1.Value("menu.non.existant")
-	r4Exp := "non.existant"
-	if r4 != r4Exp {
-		t.Errorf("Expected \""+r4Exp+"\", got %s", r4)
-		t.Fail()
-	}
-	r5 := t1.Value("error.404", "idnex.html")
-	r5Exp := "Page idnex.html not found!"
-	if r5 != r5Exp {
-		t.Errorf("Expected \""+r5Exp+"\", got \"%s\"", r5)
+
+	actual := t1.Value("error.404", "idnex.html")
+	expected := "Page idnex.html not found!"
+	if actual != expected {
+		t.Errorf("Expected %v, got %v", expected, actual)
 		t.Fail()
 	}
 }
 
 func TestLingoHttp(t *testing.T) {
-	l := New("en_US", "translations")
+	l, err := New("en_US", "translations", nil)
+	if err != nil {
+		t.Error(err)
+	}
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		expected := r.Header.Get("Expected-Results")
 		t1 := l.TranslationsForRequest(r)
-		r1 := t1.Value("error.500")
-		if r1 != expected {
-			t.Errorf("Expected \""+expected+"\", got %s", r1)
+		actual := t1.Value("error.500")
+		if actual != expected {
+			t.Errorf("Expected %v, got %v", expected, actual)
 			t.Fail()
 		}
 	}))

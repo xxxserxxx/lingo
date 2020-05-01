@@ -1,23 +1,23 @@
-**This is a version of https://github.com/kortemy/lingo that uses TOML instead of JSON for messages storage**
-
 lingo-toml
-=====
+==========
 
-Very basic Golang library for i18n. There are others that do the job, but this is my take on the problem.
+Very basic Golang library for i18n.
+
+The original project was by [@kortemy](https://github.com/kortemy/lingo), and uses JSON. A fork by [jdkeke142](https://github.com/jdkeke142/lingo-toml) changed the input to TOML. This fork abstracts the file system away, allowing the use of (for example) embedded assets, or assets that don't live on the local disk. It was put together around [broccoli](https://github.com/aletheia-icu/broccoli), with which it's been tested.
 
 Features:
 ---------
 1. Storing messages in TOML files.
 2. Support for nested declarations.
-2. Detecting language based on Request headers.
-3. Very simple to use.
+3. Detecting language based on Request headers.
+4. Very simple to use.
 
 Usage:
 ------
   1. Import Lingo into your project
 
       ```go
-        import "github.com/jdkeke142/lingo-toml"
+        import "github.com/xxxserxxx/lingo"
       ```
   1. Create a dir to store translations, and write them in TOML files named [locale].toml. For example:
 
@@ -44,7 +44,13 @@ Usage:
   2. Initialize a Lingo like this:
 
       ```go
-        l := lingo.New("default_locale", "path/to/translations/dir")
+        l := lingo.New("default_locale", "path/to/translations/dir", nil)
+      ```
+
+      This is where you would pass in a `lingo.FileSystem` if you want lingo to read from something other than the disk. Passing in `nil` is the same as calling:
+
+      ```go
+        l := lingo.New("default_locale", "path/to/translations/dir", lingo.OSFS())
       ```
 
   3. Get bundle for specific locale via either `string`:
@@ -74,6 +80,6 @@ Usage:
         // "Page index.html not found!"
       ```
 
-Contributions:
------
-I regard this little library as feature-complete, but if you have an idea on how to improve it, feel free to create issues. Also, pull requests are welcome. Enjoy!
+Contributions
+-------------
+This was forked to support another project; I'll accept PRs and will fix bugs, but am unlikely to add features.
