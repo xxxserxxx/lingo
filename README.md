@@ -80,6 +80,33 @@ Usage:
         // "Page index.html not found!"
       ```
 
+Behaviors
+---------
+
+-  Lingo will return the default locale if it can't find a requested locale.
+-  Lingo will return the default locale's text if it can't find a translation for the key in the requested locale.
+-  Lingo will return the requested *key* if it can't find either the requested or the default text.
+-  Text values can have positional tags, e.g. `{0}`, `{1}`.  These will be replaced by any varargs supplied to `Value`.  E.g.:
+
+    ```
+    thing="Hey there, {1}, how is {0}?"
+    ```
+
+    and
+
+    ```go
+    res := t1.Value("thing", "your dog", "person")
+    ```
+
+    will produce
+
+    ```
+    Hey there, person, how is your dog
+    ```
+-  Locales **must** match the file names.  E.g., `en_US` must be in a file called `en_US.toml`, not `en_us.toml`.
+-  Files in the translation directory that do not end in `.toml` are ignored.
+
+
 Contributions
 -------------
 This was forked to support another project; I'll accept PRs and will fix bugs, but am unlikely to add features.
