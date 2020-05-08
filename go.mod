@@ -1,4 +1,4 @@
-module github.com/xxxserxxx/lingo
+module github.com/jdkeke142/lingo-toml
 
 go 1.14
 
