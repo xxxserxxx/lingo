@@ -1,23 +1,23 @@
-**This is a version of https://github.com/kortemy/lingo that uses TOML instead of JSON for messages storage**
-
 lingo-toml
-=====
+==========
 
-Very basic Golang library for i18n. There are others that do the job, but this is my take on the problem.
+Very basic Golang library for i18n.
+
+The original project was by [@kortemy](https://github.com/kortemy/lingo), and uses JSON. A fork by [jdkeke142](https://github.com/jdkeke142/lingo-toml) changed the input to TOML. This fork abstracts the file system away, allowing the use of (for example) embedded assets, or assets that don't live on the local disk. It was put together around [broccoli](https://github.com/aletheia-icu/broccoli), with which it's been tested.
 
 Features:
 ---------
 1. Storing messages in TOML files.
 2. Support for nested declarations.
-2. Detecting language based on Request headers.
-3. Very simple to use.
+3. Detecting language based on Request headers.
+4. Very simple to use.
 
 Usage:
 ------
   1. Import Lingo into your project
 
       ```go
-        import "github.com/jdkeke142/lingo-toml"
+        import "github.com/xxxserxxx/lingo"
       ```
   1. Create a dir to store translations, and write them in TOML files named [locale].toml. For example:
 
@@ -44,7 +44,13 @@ Usage:
   2. Initialize a Lingo like this:
 
       ```go
-        l := lingo.New("default_locale", "path/to/translations/dir")
+        l := lingo.New("default_locale", "path/to/translations/dir", nil)
+      ```
+
+      This is where you would pass in a `lingo.FileSystem` if you want lingo to read from something other than the disk. Passing in `nil` is the same as calling:
+
+      ```go
+        l := lingo.New("default_locale", "path/to/translations/dir", lingo.OSFS())
       ```
 
   3. Get bundle for specific locale via either `string`:
@@ -74,6 +80,33 @@ Usage:
         // "Page index.html not found!"
       ```
 
-Contributions:
------
-I regard this little library as feature-complete, but if you have an idea on how to improve it, feel free to create issues. Also, pull requests are welcome. Enjoy!
+Behaviors
+---------
+
+-  Lingo will return the default locale if it can't find a requested locale.
+-  Lingo will return the default locale's text if it can't find a translation for the key in the requested locale.
+-  Lingo will return the requested *key* if it can't find either the requested or the default text.
+-  Text values can have positional tags, e.g. `{0}`, `{1}`.  These will be replaced by any varargs supplied to `Value`.  E.g.:
+
+    ```
+    thing="Hey there, {1}, how is {0}?"
+    ```
+
+    and
+
+    ```go
+    res := t1.Value("thing", "your dog", "person")
+    ```
+
+    will produce
+
+    ```
+    Hey there, person, how is your dog
+    ```
+-  Locales **must** match the file names.  E.g., `en_US` must be in a file called `en_US.toml`, not `en_us.toml`.
+-  Files in the translation directory that do not end in `.toml` are ignored.
+
+
+Contributions
+-------------
+This was forked to support another project; I'll accept PRs and will fix bugs, but am unlikely to add features.
