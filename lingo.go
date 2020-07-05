@@ -12,13 +12,14 @@ import (
 	"github.com/BurntSushi/toml"
 )
 
-type FileSystem interface {
-	Open(name string) (*os.File, error)
-	Walk(root string, walkFn filepath.WalkFunc) error
+func OSFS() http.FileSystem {
+	return osfs{}
 }
 
-func OSFS() FileSystem {
-	return osfs{}
+type osfs struct{}
+
+func (_ osfs) Open(name string) (http.File, error) {
+	return os.Open(name)
 }
 
 // Lingo is a translation bundle of all translations by locale, as well as
@@ -34,7 +35,7 @@ type Lingo struct {
 // in the requested locale. `path` is the absolute or relative path to the
 // folder of TOML translations. `fs` is either a FileSystem or null, used to
 // locate the path and translation files.
-func New(deflt, path string, fs FileSystem) (*Lingo, error) {
+func New(deflt, path string, fs http.FileSystem) (*Lingo, error) {
 	if fs == nil {
 		fs = OSFS()
 	}
@@ -43,7 +44,7 @@ func New(deflt, path string, fs FileSystem) (*Lingo, error) {
 		deflt:     deflt,
 		supported: make([]Locale, 0),
 	}
-	err := fs.Walk(path, func(pth string, info os.FileInfo, err error) error {
+	err := filepath.Walk(path, func(pth string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -135,17 +136,6 @@ func (t Translations) Value(key string, args ...string) string {
 		return t.def.TranslationsForLocale(t.def.deflt).Value(key, args...)
 	}
 	return key
-}
-
-type osfs struct {
-}
-
-func (_ osfs) Open(name string) (*os.File, error) {
-	return os.Open(name)
-}
-
-func (_ osfs) Walk(root string, walkFn filepath.WalkFunc) error {
-	return filepath.Walk(root, walkFn)
 }
 
 // sprintf replaces the argument placeholders with given arguments
