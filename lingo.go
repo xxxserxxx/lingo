@@ -2,6 +2,7 @@ package lingo
 
 import (
 	"fmt"
+	"io/fs"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -10,18 +11,7 @@ import (
 	"strings"
 
 	"github.com/BurntSushi/toml"
-	"github.com/shurcooL/httpfs/vfsutil"
 )
-
-func OSFS() http.FileSystem {
-	return osfs{}
-}
-
-type osfs struct{}
-
-func (_ osfs) Open(name string) (http.File, error) {
-	return os.Open(name)
-}
 
 // Lingo is a translation bundle of all translations by locale, as well as
 // default locale and list of supported locales
@@ -36,16 +26,16 @@ type Lingo struct {
 // in the requested locale. `path` is the absolute or relative path to the
 // folder of TOML translations. `fs` is either a FileSystem or null, used to
 // locate the path and translation files.
-func New(deflt, path string, fs http.FileSystem) (*Lingo, error) {
-	if fs == nil {
-		fs = OSFS()
+func New(deflt, path string, root fs.FS) (*Lingo, error) {
+	if root == nil {
+		root = os.DirFS(".")
 	}
 	l := &Lingo{
 		bundle:    make(map[string]Translations),
 		deflt:     deflt,
 		supported: make([]Locale, 0),
 	}
-	err := vfsutil.Walk(fs, path, func(pth string, info os.FileInfo, err error) error {
+	err := fs.WalkDir(root, path, func(pth string, info fs.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
@@ -56,7 +46,7 @@ func New(deflt, path string, fs http.FileSystem) (*Lingo, error) {
 		if !strings.HasSuffix(fileName, ".toml") {
 			return nil
 		}
-		f, err := fs.Open(pth)
+		f, err := root.Open(pth)
 		if err != nil {
 			return err
 		}
