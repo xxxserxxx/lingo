@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/BurntSushi/toml"
+	"github.com/shurcooL/httpfs/vfsutil"
 )
 
 func OSFS() http.FileSystem {
@@ -44,7 +45,7 @@ func New(deflt, path string, fs http.FileSystem) (*Lingo, error) {
 		deflt:     deflt,
 		supported: make([]Locale, 0),
 	}
-	err := filepath.Walk(path, func(pth string, info os.FileInfo, err error) error {
+	err := vfsutil.Walk(fs, path, func(pth string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -55,7 +56,11 @@ func New(deflt, path string, fs http.FileSystem) (*Lingo, error) {
 		if !strings.HasSuffix(fileName, ".toml") {
 			return nil
 		}
-		dat, err := ioutil.ReadFile(pth)
+		f, err := fs.Open(pth)
+		if err != nil {
+			return err
+		}
+		dat, err := ioutil.ReadAll(f)
 		if err != nil {
 			return err
 		}
